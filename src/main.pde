@@ -8,7 +8,7 @@ let setup = function () {
 
 /**
  * Represents snake
- * @param {object} snakePropertiesObj
+ * @param {object} snakePropertiesObj - This contains the properties of snake
  * @constructor Snake
  */
 let Snake = function (snakePropertiesObj) {
@@ -37,14 +37,28 @@ Snake.prototype.disappear = function () {
 };
 
 /**
- * Checks if the snake hits the barrier
+ * Checks if the snake hits the classic barrier
  */
-Snake.prototype.checkForBarrierHit = function () {
+Snake.prototype.checkForClassicBarrierHit = function () {
     if (this.x <= CLASSIC_BARRIER_WIDTH || this.x >= BOARD_WIDTH - CLASSIC_BARRIER_WIDTH + 2 * BOARD_MARGIN_ERROR_X ||
         this.y <= CLASSIC_BARRIER_HEIGHT || this.y >= BOARD_HEIGHT - CLASSIC_BARRIER_HEIGHT + 5 * BOARD_MARGIN_ERROR_Y) {
         alert("GAME OVER");
         location.reload();
         start()
+    }
+};
+
+/**
+ * Checks if the snake eats the food
+ * @param {Food} food - This is instance of Food
+ */
+Snake.prototype.checkForFoodEat = function (food) {
+    if (this.x >= food.x && this.x <= food.x + FOOD_DEFAULT_WIDTH &&
+        this.y >= food.y && this.y <= food.y + FOOD_DEFAULT_HEIGHT) {
+        this.score += food.value;
+        food.disappear();
+        let newFood = new Food({});
+        newFood.draw();
     }
 };
 
@@ -187,6 +201,7 @@ let start = function () {
 
     mouseMoved = function () {
         snake.disappear();
+
         if (mouseX - pmouseX > 0) {
             snake.moveRight();
         } else if (mouseX - pmouseX < 0) {
@@ -197,8 +212,9 @@ let start = function () {
             snake.moveDown();
         }
 
-        snake.checkForBarrierHit();
+        snake.checkForClassicBarrierHit();
         snake.draw();
+        snake.checkForFoodEat(food);
     };
 };
 
