@@ -8,7 +8,7 @@ let Snake = function (snakePropertiesObj) {
     this.y = snakePropertiesObj.y || SNAKE_DEFAULT_Y;
     this.width = snakePropertiesObj.width || SNAKE_DEFAULT_WIDTH;
     this.height = snakePropertiesObj.height || SNAKE_DEFAULT_HEIGHT;
-    this.score = 0;
+    this.score = snakePropertiesObj.score || SCORE_DEFAULT_VALUE;
 };
 
 /**

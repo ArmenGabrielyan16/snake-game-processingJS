@@ -14,6 +14,7 @@ let Barrier = function (barrierPropertiesObj) {
  * Draws barrier on the canvas
  */
 Barrier.prototype.draw = function () {
-    fill(0, 0, 0);
+    fill(135, 110, 35);
+    noStroke();
     rect(this.x, this.y, this.width, this.height);
 };

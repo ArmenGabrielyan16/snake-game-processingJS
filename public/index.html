@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Snake Game</title>
-    <script src="../processingJS/processing.js"></script>
-    <script src="../processingJS/processing.min.js"></script>
-    <script src="../main/constants.js"></script>
-    <script src="../main/helperFunctions.js"></script>
+    <script type="text/javascript" src="../processingJS/processing.js"></script>
+    <script type="text/javascript" src="../processingJS/processing.min.js"></script>
+    <script type="text/javascript" src="../main/constants.js"></script>
+    <script type="text/javascript" src="../main/helperFunctions.js"></script>
 </head>
 <body>
-    <canvas data-processing-sources="../src/barrier.pde ../src/food.pde ../src/snake.pde ../main/barrierHelperFunctions.pde ../src/main.pde">
+    <canvas id="canvas" data-processing-sources="../src/barrier.pde ../src/food.pde ../src/snake.pde ../main/barrierHelperFunctions.pde ../src/main.pde">
     </canvas>
+    <canvas id="canvas-scoreline">
+    </canvas>
+
+    <script type="text/javascript" src="../main/variables.js"></script>
 </body>
 </html>
