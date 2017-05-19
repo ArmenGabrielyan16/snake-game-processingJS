@@ -22,6 +22,7 @@ let Food = function (foodPropertiesObj) {
     this.width = foodPropertiesObj.width || FOOD_DEFAULT_WIDTH;
     this.height = foodPropertiesObj.height || FOOD_DEFAULT_HEIGHT;
     this.value = foodPropertiesObj.value || FOOD_DEFAULT_VALUE;
+    this.hits = foodPropertiesObj.hits || FOOD_DEFAULT_HITS;
 };
 
 /**
@@ -37,6 +38,6 @@ Food.prototype.draw = function () {
  * Makes the food to disappear
  */
 Food.prototype.disappear = function () {
-    fill(255, 255, 255);
+    fill(255, 255, 255, 1000);
     rect(this.x, this.y, this.width, this.height);
 };

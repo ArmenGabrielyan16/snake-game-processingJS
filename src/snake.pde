@@ -8,7 +8,7 @@ let Snake = function (snakePropertiesObj) {
     this.y = snakePropertiesObj.y || SNAKE_DEFAULT_Y;
     this.width = snakePropertiesObj.width || SNAKE_DEFAULT_WIDTH;
     this.height = snakePropertiesObj.height || SNAKE_DEFAULT_HEIGHT;
-    this.score = 0;
+    this.score = snakePropertiesObj.score || SCORE_DEFAULT_VALUE;
 };
 
 /**
@@ -36,7 +36,7 @@ Snake.prototype.checkForClassicBarrierHit = function () {
         this.y <= CLASSIC_BARRIER_HEIGHT || this.y >= BOARD_HEIGHT - CLASSIC_BARRIER_HEIGHT + 5 * BOARD_MARGIN_ERROR_Y) {
         alert("GAME OVER");
         location.reload();
-        start()
+        start(new Snake({}));
     }
 };
 
@@ -45,12 +45,18 @@ Snake.prototype.checkForClassicBarrierHit = function () {
  * @param {Food} food - This is instance of Food
  */
 Snake.prototype.checkForFoodEat = function (food) {
-    if (this.x >= food.x && this.x <= food.x + FOOD_DEFAULT_WIDTH &&
-        this.y >= food.y && this.y <= food.y + FOOD_DEFAULT_HEIGHT) {
-        this.score += food.value;
-        food.disappear();
-        let newFood = new Food({});
-        newFood.draw();
+    if (food.hits === 0) {
+        if ((this.x >= food.x || this.x + SNAKE_DEFAULT_WIDTH >= food.x) && this.x <= food.x + FOOD_DEFAULT_WIDTH &&
+            (this.y >= food.y || this.y + SNAKE_DEFAULT_HEIGHT >= food.y) && this.y <= food.y + FOOD_DEFAULT_HEIGHT) {
+            food.disappear();
+            food.hits = 1;
+
+            let newFood = new Food({});
+            newFood.draw();
+
+            this.score += food.value;
+            start(this);
+        }
     }
 };
 

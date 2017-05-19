@@ -4,65 +4,62 @@
 let setup = function () {
     size(BOARD_WIDTH, BOARD_HEIGHT);
     background(0, 0);
+
+    canvas.style.left = WIDTH / 3 + 'px';
+    canvas.style.top = HEIGHT / 3 + 'px';
+    canvas.style.position = "absolute";
+
+    canvasScoreline.style.width = BOARD_WIDTH + 'px';
+    canvasScoreline.style.height = BOARD_HEIGHT + 'px';
+    canvasScoreline.style.left = WIDTH / 3 + 'px';
+    canvasScoreline.style.top = HEIGHT / 3 + BOARD_HEIGHT + 'px';
+    canvasScoreline.style.position = 'absolute';
 };
 
 /**
- * Draws barrier around the canvas - Classic Barrier
+ * Draws scoreline on the canvas
+ * @param {Snake} snake - This is a Snake object
  */
-drawClassicBarrier = function () {
-    for (let i = 0;i < BOARD_WIDTH;i += CLASSIC_BARRIER_WIDTH) {
-        for (let j = 0;j < BOARD_HEIGHT;j += CLASSIC_BARRIER_HEIGHT) {
-            let marginErrorX, marginErrorY;
+let drawScoreline = function (snake) {
+    let context = canvasScoreline.getContext('2d');
 
-            if (i == 0 || j == 0) {
-                marginErrorX = 0;
-                marginErrorY = 0;
-            }
-
-            if (i > BOARD_WIDTH - CLASSIC_BARRIER_WIDTH) {
-                marginErrorX = BOARD_MARGIN_ERROR_X;
-                marginErrorY = 0;
-            }
-
-            if (j > BOARD_HEIGHT - CLASSIC_BARRIER_HEIGHT) {
-                marginErrorX = 0;
-                marginErrorY = BOARD_MARGIN_ERROR_Y;
-            }
-
-            if (i == 0 || j == 0 || i > BOARD_WIDTH - CLASSIC_BARRIER_WIDTH || j > BOARD_HEIGHT - CLASSIC_BARRIER_HEIGHT) {
-                new Barrier({
-                    x: i + marginErrorX,
-                    y: j + marginErrorY
-                }).draw();
-            }
-        }
+    if (snake.score > 0) {
+        context.clearRect(0, 0, BOARD_WIDTH, BOARD_HEIGHT);
+        console.log(snake.score);
     }
+
+    context.font = '14px Times New Roman';
+    context.fillText(SCORE_DEFAULT_LABEL + '  ' + snake.score, 0, 20);
 };
 
 /**
  * Starts the program
+ * @param {Snake} snake - This is the snake on the canvas
  */
-let start = function () {
+let start = function (snake) {
     setup();
     drawClassicBarrier();
+    drawScoreline(snake);
 
     let food = new Food({});
     food.draw();
 
-    let snake = new Snake({});
     snake.draw();
 
-    mouseMoved = function () {
+    document.onkeypress = function(event) {
         snake.disappear();
 
-        if (mouseX - pmouseX > 0) {
-            snake.moveRight();
-        } else if (mouseX - pmouseX < 0) {
-            snake.moveLeft();
-        } else if (mouseY - pmouseY > 0) {
-            snake.moveUp();
-        } else if (mouseY - pmouseY < 0) {
-            snake.moveDown();
+        event = event || window.event;
+        let keyCode = event.keyCode || event.which;
+
+        switch (keyCode) {
+            case KEY_CODE_A: snake.moveLeft();
+            break;
+            case KEY_CODE_W: snake.moveUp();
+            break;
+            case KEY_CODE_D: snake.moveRight();
+            break;
+            case KEY_CODE_S: snake.moveDown()
         }
 
         snake.checkForClassicBarrierHit();
@@ -71,4 +68,4 @@ let start = function () {
     };
 };
 
-start();
+start(new Snake({}));
