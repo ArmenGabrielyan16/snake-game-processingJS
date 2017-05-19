@@ -7,110 +7,6 @@ let setup = function () {
 };
 
 /**
- * Represents snake
- * @param {object} snakePropertiesObj - This contains the properties of snake
- * @constructor Snake
- */
-let Snake = function (snakePropertiesObj) {
-    this.x = snakePropertiesObj.x || SNAKE_DEFAULT_X;
-    this.y = snakePropertiesObj.y || SNAKE_DEFAULT_Y;
-    this.width = snakePropertiesObj.width || SNAKE_DEFAULT_WIDTH;
-    this.height = snakePropertiesObj.height || SNAKE_DEFAULT_HEIGHT;
-    this.score = 0;
-};
-
-/**
- * Draws snake on the canvas
- */
-Snake.prototype.draw = function () {
-    fill(90, 245, 65);
-    noStroke();
-    rect(this.x, this.y, this.width, this.height);
-};
-
-/**
- * Makes the snake to disappear
- */
-Snake.prototype.disappear = function () {
-    fill(255, 255, 255);
-    rect(this.x, this.y, this.width, this.height);
-};
-
-/**
- * Checks if the snake hits the classic barrier
- */
-Snake.prototype.checkForClassicBarrierHit = function () {
-    if (this.x <= CLASSIC_BARRIER_WIDTH || this.x >= BOARD_WIDTH - CLASSIC_BARRIER_WIDTH + 2 * BOARD_MARGIN_ERROR_X ||
-        this.y <= CLASSIC_BARRIER_HEIGHT || this.y >= BOARD_HEIGHT - CLASSIC_BARRIER_HEIGHT + 5 * BOARD_MARGIN_ERROR_Y) {
-        alert("GAME OVER");
-        location.reload();
-        start()
-    }
-};
-
-/**
- * Checks if the snake eats the food
- * @param {Food} food - This is instance of Food
- */
-Snake.prototype.checkForFoodEat = function (food) {
-    if (this.x >= food.x && this.x <= food.x + FOOD_DEFAULT_WIDTH &&
-        this.y >= food.y && this.y <= food.y + FOOD_DEFAULT_HEIGHT) {
-        this.score += food.value;
-        food.disappear();
-        let newFood = new Food({});
-        newFood.draw();
-    }
-};
-
-/**
- * Moves the snake rightwards
- */
-Snake.prototype.moveRight = function () {
-    this.x += SNAKE_MOVE_SPEED;
-};
-
-/**
- * Moves the snake leftwards
- */
-Snake.prototype.moveLeft = function () {
-    this.x -= SNAKE_MOVE_SPEED;
-};
-
-/**
- * Moves the snake upwards
- */
-Snake.prototype.moveUp = function () {
-    this.y += SNAKE_MOVE_SPEED;
-};
-
-/**
- * Moves the snake downwards
- */
-Snake.prototype.moveDown = function () {
-    this.y -= SNAKE_MOVE_SPEED;
-};
-
-/**
- * Represents barrier
- * @param {object} barrierPropertiesObj - This contains the properties of barrier
- * @constructor Barrier
- */
-let Barrier = function (barrierPropertiesObj) {
-    this.x = barrierPropertiesObj.x;
-    this.y = barrierPropertiesObj.y;
-    this.width = barrierPropertiesObj.width || CLASSIC_BARRIER_WIDTH;
-    this.height = barrierPropertiesObj.height || CLASSIC_BARRIER_HEIGHT;
-};
-
-/**
- * Draws barrier on the canvas
- */
-Barrier.prototype.draw = function () {
-    fill(0, 0, 0);
-    rect(this.x, this.y, this.width, this.height);
-};
-
-/**
  * Draws barrier around the canvas - Classic Barrier
  */
 drawClassicBarrier = function () {
@@ -144,72 +40,32 @@ drawClassicBarrier = function () {
 };
 
 /**
- * Represents food
- * @param {object} foodPropertiesObj - This contains the properties of food
- * @constructor Food
- */
-let Food = function (foodPropertiesObj) {
-    let distanceX = 2 * FOOD_DEFAULT_WIDTH;
-    let distanceY = 2 * FOOD_DEFAULT_HEIGHT;
-
-    while (true) {
-        let randomX = getRandomInt(CLASSIC_BARRIER_WIDTH + distanceX, BOARD_WIDTH - CLASSIC_BARRIER_WIDTH - distanceX);
-        let randomY = getRandomInt(CLASSIC_BARRIER_HEIGHT + distanceY, BOARD_HEIGHT - CLASSIC_BARRIER_HEIGHT - distanceY);
-
-        if ((randomX < SNAKE_DEFAULT_X - SNAKE_DEFAULT_WIDTH || randomX > SNAKE_DEFAULT_X + 2 * SNAKE_DEFAULT_WIDTH) &&
-            (randomY < SNAKE_DEFAULT_Y - SNAKE_DEFAULT_HEIGHT || randomY > SNAKE_DEFAULT_Y + 2 * SNAKE_DEFAULT_HEIGHT)) {
-            break;
-        }
-    }
-
-    this.x = foodPropertiesObj.x || randomX;
-    this.y = foodPropertiesObj.y || randomY;
-    this.width = foodPropertiesObj.width || FOOD_DEFAULT_WIDTH;
-    this.height = foodPropertiesObj.height || FOOD_DEFAULT_HEIGHT;
-    this.value = foodPropertiesObj.value || FOOD_DEFAULT_VALUE;
-};
-
-/**
- * Draws food on the canvas
- */
-Food.prototype.draw = function () {
-    fill(255, 0, 0);
-    noStroke();
-    rect(this.x, this.y, this.width, this.height);
-};
-
-/**
- * Makes the food to disappear
- */
-Food.prototype.disappear = function () {
-    fill(255, 255, 255);
-    rect(this.x, this.y, this.width, this.height);
-};
-
-/**
  * Starts the program
+ * @param {Snake} snake - This is the snake on the canvas
  */
-let start = function () {
+let start = function (snake) {
     setup();
     drawClassicBarrier();
 
     let food = new Food({});
     food.draw();
 
-    let snake = new Snake({});
     snake.draw();
 
-    mouseMoved = function () {
+    document.onkeypress = function(event) {
         snake.disappear();
 
-        if (mouseX - pmouseX > 0) {
-            snake.moveRight();
-        } else if (mouseX - pmouseX < 0) {
-            snake.moveLeft();
-        } else if (mouseY - pmouseY > 0) {
-            snake.moveUp();
-        } else if (mouseY - pmouseY < 0) {
-            snake.moveDown();
+        event = event || window.event;
+        let keyCode = event.keyCode || event.which;
+
+        switch (keyCode) {
+            case KEY_CODE_A: snake.moveLeft();
+            break;
+            case KEY_CODE_W: snake.moveUp();
+            break;
+            case KEY_CODE_D: snake.moveRight();
+            break;
+            case KEY_CODE_S: snake.moveDown()
         }
 
         snake.checkForClassicBarrierHit();
@@ -218,4 +74,4 @@ let start = function () {
     };
 };
 
-start();
+start(new Snake({}));
